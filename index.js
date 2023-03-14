@@ -5,11 +5,11 @@ const ExcelJS = require('exceljs');
 
 const workbook = new ExcelJS.Workbook();
 const worksheet = workbook.addWorksheet('Player Stats');
-const headers = ['Team Name','Player Name','Games Played', 
+const header = ['Team Name','Player Name','Games Played', 
 'Minutes Played', 'Points per Game', 'Rebounds per Game',
 'Assists per Game', 'Steals per Game', 'Blocks per Game',
 'Field Goal Percentage', 'Three-Point Percentage', 'Free Throw Percentage'];
-worksheet.addRow(headers);
+worksheet.addRow(header);
 
 const pages = [248, 333, 251, 2509, 2305, 2250, 12, 26, 41, 269, 
   239, 156, 150, 2633, 96, 84, 245, 2628, 21, 66, 2, 2752, 235, 
@@ -24,7 +24,7 @@ async function scrape() {
       .then(response => {
         const $ = cheerio.load(response.data);
 
-        const team_name = $('h1.headline.headline__h1.dib').text();
+        const team_name = $('h1.headline.headline__h1.dib').text().replace(/[\d]|[\-]|(\Stats)/g,'');
         const left_table = $('table:eq(0)');
         const right_table = $('table:eq(1)');
         const left_rows = left_table.find('tr').slice(1, -1);
@@ -43,8 +43,8 @@ async function scrape() {
           const steals_per_game = parseFloat(right_cols.eq(5).text());
           const blocks_per_game = parseFloat(right_cols.eq(6).text());
           const field_goal_percentage = parseFloat(right_cols.eq(8).text());
-          const three_point_percentage = parseFloat(right_cols.eq(10).text());
           const free_throw_percentage = parseFloat(right_cols.eq(9).text());
+          const three_point_percentage = parseFloat(right_cols.eq(10).text());
           stats.push({
             'Team Name': team_name,
             'Player Name': player_name,
@@ -56,8 +56,8 @@ async function scrape() {
             'Steals per Game': steals_per_game,
             'Blocks per Game': blocks_per_game,
             'Field Goal Percentage': field_goal_percentage + '%',
-            'Three-Point Percentage': three_point_percentage + '%',
-            'Free Throw Percentage': free_throw_percentage + '%'
+            'Free Throw Percentage': free_throw_percentage + '%',
+            'Three-Point Percentage': three_point_percentage + '%'
           });
         });
 
