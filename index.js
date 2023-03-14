@@ -5,6 +5,11 @@ const ExcelJS = require('exceljs');
 
 const workbook = new ExcelJS.Workbook();
 const worksheet = workbook.addWorksheet('Player Stats');
+const headers = ['Team Name','Player Name','Games Played', 
+'Minutes Played', 'Points per Game', 'Rebounds per Game',
+'Assists per Game', 'Steals per Game', 'Blocks per Game',
+'Field Goal Percentage', 'Three-Point Percentage', 'Free Throw Percentage'];
+worksheet.addRow(headers);
 
 const pages = [248, 333, 251, 2509, 2305, 2250, 12, 26, 41, 269, 
   239, 156, 150, 2633, 96, 84, 245, 2628, 21, 66, 2, 2752, 235, 
@@ -55,10 +60,6 @@ async function scrape() {
             'Free Throw Percentage': free_throw_percentage + '%'
           });
         });
-
-        // Add header row
-        const headers = Object.keys(stats[0]);
-        worksheet.addRow(headers);
 
         // Add data rows
         stats.forEach(stat => {
